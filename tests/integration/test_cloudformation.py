@@ -3,6 +3,7 @@ import os
 import time
 import unittest
 
+import pytest as pytest
 from botocore.exceptions import ClientError
 from botocore.parsers import ResponseParserError
 
@@ -2004,6 +2005,15 @@ class CloudFormationTest(unittest.TestCase):
         template = load_file(os.path.join(THIS_FOLDER, "templates", "template30.yaml"))
 
         cfn = aws_stack.connect_to_service("cloudformation")
+        if cfn.meta.region_name not in [
+            "ap-northeast-1",
+            "eu-central-1",
+            "eu-south-1",
+            "eu-west-1",
+            "eu-west-2",
+            "us-east-1",
+        ]:
+            pytest.skip()
         ec2_client = aws_stack.connect_to_service("ec2")
 
         create_and_await_stack(
